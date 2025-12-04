@@ -120,3 +120,17 @@ def policy_iteration(P, n_states, gamma, theta, max_iters):
         if policy_stable:
             break
     return V, policy, iteration, eval_iters
+
+def run_agent(grid, gamma=0.6, theta=1e-4, max_iters=10000, mode="value"):
+    P, states, pos2idx, is_obstacle, is_goal, start, H, W = build_transition_model(grid)
+    n_states = len(states)
+
+    if mode == "value":
+        V, policy, iterations = value_iteration(P, n_states, gamma, theta, max_iters)
+        eval_iters = None
+    elif mode == "policy":
+        V, policy, iterations, eval_iters = policy_iteration(P, n_states, gamma, theta, max_iters)
+    else:
+        raise ValueError("mode must be 'value' or 'policy'")
+
+    return {"value_table": V, "policy": policy, "iterations": iterations, "eval_iters": eval_iters }
