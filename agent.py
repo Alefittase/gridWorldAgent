@@ -19,6 +19,7 @@ def build_states(grid):
             states.append((i,j))
             pos2idx[(i,j)] = index
             is_obstacle[(i,j)] = False
+            is_goal[(i,j)] = False
             if c == "G":
                 is_goal[(i,j)] = True
             if c == "S":
@@ -127,7 +128,7 @@ def run_agent(grid, gamma=0.6, theta=1e-4, max_iters=10000, mode="value"):
 
     if mode == "value":
         V, policy, iterations = value_iteration(P, n_states, gamma, theta, max_iters)
-        eval_iters = None
+        eval_iters = 0
     elif mode == "policy":
         V, policy, iterations, eval_iters = policy_iteration(P, n_states, gamma, theta, max_iters)
     else:
