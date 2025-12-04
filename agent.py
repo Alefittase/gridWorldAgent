@@ -63,3 +63,33 @@ def build_transition_model(grid):
 
     return P, states, pos2idx, is_obstacle, is_goal, start, H, W
 
+def value_iteration(P, n_states, gamma, theta, max_iters):
+    V = [0] * n_states
+    for iteration in range(max_iters):
+        delta = 0
+        new_V = [0] * n_states
+        for s in range(n_states):
+            q_values = []
+            for action in ACTIONS:
+                next_s, prob, reward = P[action][s]
+                q = reward + gamma * V[next_s]
+                q_values.append(q)
+            new_V[s] = max(q_values)
+            delta = max(delta, abs(new_V[s] - V[s]))
+        V = new_V
+        if delta < theta:
+            break
+    policy = []
+    for s in range(n_states):
+        best_action = None
+        best_value = float("-inf")
+        for action in ACTIONS:
+            next_s, prob, reward = P[action][s]
+            q = reward + gamma * V[next_s]
+            if q > best_value:
+                best_action = q
+                best_action = action
+        policy.append(best_action)
+    return V, policy, iteration
+
+    
