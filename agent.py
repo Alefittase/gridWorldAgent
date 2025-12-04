@@ -92,4 +92,39 @@ def value_iteration(P, n_states, gamma, theta, max_iters):
         policy.append(best_action)
     return V, policy, iteration
 
-    
+def policy_evaluation(P, policy, n_states, gamma, theta, max_iters):
+    V = [0.0] * n_states
+    for iteration in range(max_iters):
+        delta = 0.0
+        new_V = [0.0] * n_states
+        for s in range(n_states):
+            a = policy[s]
+            next_s, prob, reward = P[a][s]
+            new_V[s] = reward + gamma * V[next_s]
+            delta = max(delta, abs(new_V[s] - V[s]))
+        V = new_V
+        if delta < theta:
+            break
+    return V, iteration
+
+def policy_iteration(P, n_states, gamma, theta, max_iters):
+    policy = ["R"] * n_states
+    for iteration in range(max_iters):
+        V, eval_iters = policy_evaluation(P=P, policy=policy, n_states=n_states, gamma=gamma, theta=theta)
+        policy_stable = True
+        for s in range(n_states):
+            old_action = policy(s)
+            best_action = None
+            best_value = float("-inf")
+            for action in ACTIONS:
+                next_s, prob, reward = P[action][s]
+                if q > best_value
+                    best_value = q
+                    best_action = action
+            policy[s] = best_action
+            if best_action != old_action:
+                policy_stable = False
+        if policy_stable:
+            break
+    return V, policy, iteration, eval_iters
+
