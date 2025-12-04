@@ -9,7 +9,7 @@ GRID_MAP = [
 ACTIONS = ["U", "R", "D", "L"]
 ACTION_DELTA = {"U":(-1,0),"R":(0,1),"D":(1,0),"L":(0,-1)}
 
-def build_status(grid):
+def build_states(grid):
     states = []
     pos2idx = {}
     is_obstacle = {}
@@ -46,4 +46,20 @@ def mdp_successor(pos, action, grid, pos2idx, is_obstacle, is_goal, H, W):
         return (ni, nj), 10
     return (ni, nj), -1
 
-def 
+def build_transition_model(grid):
+    states, pos2idx, is_obstacle, is_goal, start, H, W = build_states(grid)
+    n_states = len(states)
+    P = {action: [None] * n_states for action in ACTIONS}
+    for s_idx, pos in enumerate(states):
+        if is_goal[pos]:
+            for action in ACTIONS:
+                P[action][s_idx] = (s_idx, 1.0, 0.0)
+            continue
+
+        for action in ACTIONS:
+            next_pos, reward = mdp_successor(pos, action, grid, pos2idx, is_obstacle, is_goal, H, W )
+            next_idx = pos2idx[next_pos]
+            P[action][s_idx] = (next_idx, 1.0, reward)
+
+    return P, states, pos2idx, is_obstacle, is_goal, start, H, W
+
