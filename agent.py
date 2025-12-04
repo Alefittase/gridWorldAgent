@@ -1,11 +1,3 @@
-GRID_MAP = [
-    ["S","_","_","X","_"],
-    ["_","X","_","_","_"],
-    ["_","_","X","_","_"],
-    ["X","_","_","_","G"],
-    ["_","_","X","_","_"],
-]
-
 ACTIONS = ["U", "R", "D", "L"]
 ACTION_DELTA = {"U":(-1,0),"R":(0,1),"D":(1,0),"L":(0,-1)}
 
@@ -26,7 +18,7 @@ def build_states(grid):
             index = len(states)
             states.append((i,j))
             pos2idx[(i,j)] = index
-            is_obstacle[(i,j)] = false
+            is_obstacle[(i,j)] = False
             if c == "G":
                 is_goal[(i,j)] = True
             if c == "S":
@@ -40,7 +32,7 @@ def mdp_successor(pos, action, grid, pos2idx, is_obstacle, is_goal, H, W):
 
     if not (0 <= ni < H and 0 <= nj < W):
         return pos, -5
-    if grid[ni][nj] == "X":
+    if is_obstacle[(ni,nj)]:
         return pos, -5
     if grid[ni][nj] == "G":
         return (ni, nj), 10
@@ -64,10 +56,10 @@ def build_transition_model(grid):
     return P, states, pos2idx, is_obstacle, is_goal, start, H, W
 
 def value_iteration(P, n_states, gamma, theta, max_iters):
-    V = [0] * n_states
+    V = [0.0] * n_states
     for iteration in range(max_iters):
         delta = 0
-        new_V = [0] * n_states
+        new_V = [0.0] * n_states
         for s in range(n_states):
             q_values = []
             for action in ACTIONS:
@@ -87,7 +79,7 @@ def value_iteration(P, n_states, gamma, theta, max_iters):
             next_s, prob, reward = P[action][s]
             q = reward + gamma * V[next_s]
             if q > best_value:
-                best_action = q
+                best_value = q
                 best_action = action
         policy.append(best_action)
     return V, policy, iteration
@@ -110,15 +102,16 @@ def policy_evaluation(P, policy, n_states, gamma, theta, max_iters):
 def policy_iteration(P, n_states, gamma, theta, max_iters):
     policy = ["R"] * n_states
     for iteration in range(max_iters):
-        V, eval_iters = policy_evaluation(P=P, policy=policy, n_states=n_states, gamma=gamma, theta=theta)
+        V, eval_iters = policy_evaluation(P=P, policy=policy, n_states=n_states, gamma=gamma, theta=theta, max_iters=max_iters)
         policy_stable = True
         for s in range(n_states):
-            old_action = policy(s)
+            old_action = policy[s]
             best_action = None
             best_value = float("-inf")
             for action in ACTIONS:
                 next_s, prob, reward = P[action][s]
-                if q > best_value
+                q = reward + gamma * V[next_s]
+                if q > best_value:
                     best_value = q
                     best_action = action
             policy[s] = best_action
@@ -127,4 +120,3 @@ def policy_iteration(P, n_states, gamma, theta, max_iters):
         if policy_stable:
             break
     return V, policy, iteration, eval_iters
-
