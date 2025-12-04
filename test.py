@@ -40,4 +40,7 @@ with open("agent_experiments.csv", "w", newline="") as f:
         fieldnames=["gamma","mode","iterations","eval_iters","runtime_sec","path","policy","value_table"]
     )
     writer.writeheader()
-    for r in res
+    for r in results:
+        writer.writerow(r)
+
+print("Saved results to agent_experiments.csv")
