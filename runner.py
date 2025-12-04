@@ -1,11 +1,11 @@
 import time
 import copy
 import math
-from agent import run_agent, extract_path, build_transition_model
+from stochastic_agent import run_agent, extract_path, build_transition_model
 
 gammas = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
 modes = ["value", "policy"]
-num_runs = 150
+num_runs = 500
 
 grid = [
     ["S", "_", "_", "X", "_"],
@@ -123,7 +123,7 @@ for idx, res in enumerate(results_visual, 1):
 
 report_text = "\n".join(report_lines)
 
-with open("agent_results_readable.txt", "w") as f:
+with open("stochastic_agent_results_readable.txt", "w") as f:
     f.write(report_text)
 
-print("Saved human-readable averaged results with std to agent_results_readable.txt")
+print("Saved human-readable averaged results with std to stochastic_agent_results_readable.txt")
