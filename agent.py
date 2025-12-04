@@ -56,6 +56,20 @@ def build_transition_model(grid):
 
     return P, states, pos2idx, is_obstacle, is_goal, start, H, W
 
+def extract_path(policy, states, pos2idx, start, grid):
+    path = []
+    pos = start
+    while True:
+        path.append(pos)
+        i, j = pos
+        if grid[i][j] == "G":
+            break
+        idx = pos2idx[pos]
+        action = policy[idx]
+        di, dj = ACTION_DELTA[action]
+        pos = (i+di, j+dj)
+    return path
+
 def value_iteration(P, n_states, gamma, theta, max_iters):
     V = [0.0] * n_states
     for iteration in range(max_iters):

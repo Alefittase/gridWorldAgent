@@ -1,5 +1,6 @@
 import time
 import csv
+from agent import run_agent, extract_path, build_transition_model
 
 gammas = [0.6, 0.9, 0.1]
 modes = ["value", "policy"]
@@ -17,7 +18,7 @@ results = []
 
 for gamma in gammas:
     for mode in modes:
-        print(f"calculating with gamma={gamma} using: {mode}")
+        print(f"calculating with gamma = {gamma} using: {mode} iteration")
 
         start_time = time.time()
         out = run_agent(grid, gamma=gamma, theta=1e-4, max_iters=10000, mode=mode)
